@@ -19,7 +19,7 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     # そうすれば、リクエストに対するレスポンスは成功になるはず
     assert_response :success
     # <title>タグ内に「Home | Ruby on Rails Tutorial Sample App」という文字列があるかどうか
-    assert_select "title", "Home | #{@base_title}"
+    assert_select "title", "#{@base_title}"
   end
 
   test "should get help" do

@@ -44,4 +44,20 @@ class UserTest < ActiveSupport::TestCase
       assert_not @user.valid?, "#{invalid_address.inspect} should be invalid"
     end
   end
+
+  test "email addresses should be unique" do
+    # dupは同じ属性を持つデータを複製するためのメソッド
+    duplicate_user = @user.dup
+    # 通常メールアドレスでは大文字小文字が区別されないため大文字を区別せずにテストを行う
+    duplicate_user.email = @user.email.upcase
+    @user.save
+    assert_not duplicate_user.valid?
+  end
+
+  test "email addresses should be saved as lower-case" do
+    mixed_case_email = "Foo@ExAMPle.CoM"
+    @user.email = mixed_case_email
+    @user.save
+    assert_equal mixed_case_email.downcase, @user.reload.email
+  end
 end

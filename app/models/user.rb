@@ -18,10 +18,7 @@ class User < ApplicationRecord
     # メールアドレスの大文字小文字を無視した一意性の検証
     uniqueness: { case_sensitive: false }
   )
-<<<<<<< HEAD
-=======
   has_secure_password
   #has_secure_passwordの存在性のバリデーションは空文字を許容してしまうため以下のコードを追加
   validates :password, presence: true, length: { minimum: 6 }
->>>>>>> 6modeling_users
 end

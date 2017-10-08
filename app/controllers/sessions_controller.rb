@@ -8,9 +8,9 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:session][:password])
       # ユーザーログイン後にユーザー情報のページにリダイレクトする
     else
-      # エラーメッセージを作成する(現在は正しくないコード)
-      # リダイレクトを使った時とは異なりrenderメソッドではリクエストのメッセージが消えない
-      flash[:danger] = 'Invalid email/password combination'
+      # flash.nowはレンダリングが終わっているページで特別にフラッシュメッセージを表示することができる
+      # その後リクエストが発生した時に消滅する
+      flash.now[:danger] = 'Invalid email/password combination'
       render 'new'
     end
   end

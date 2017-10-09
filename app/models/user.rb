@@ -21,4 +21,11 @@ class User < ApplicationRecord
   has_secure_password
   #has_secure_passwordの存在性のバリデーションは空文字を許容してしまうため以下のコードを追加
   validates :password, presence: true, length: { minimum: 6 }
+
+  # 渡された文字列のハッシュ値を返す
+  def User.digest(string)
+    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
+                                                  BCrypt::Engine.cost
+    BCrypt::Password.create(string, cost: cost)
+  end
 end

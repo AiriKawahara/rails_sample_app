@@ -5,4 +5,9 @@ module SessionsHelper
     # この後のページで、session[:user_id]を使ってユーザーIDを元通りに取り出すことができる
     session[:user_id] = user.id
   end
+
+  # 現在ログイン中のユーザーを返す(ログイン中の場合)
+  def current_user
+    @current_user ||= User.find_by(id: session[:user_id])
+  end
 end

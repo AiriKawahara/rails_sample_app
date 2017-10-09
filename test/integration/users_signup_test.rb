@@ -51,5 +51,8 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
 
     # flashのテスト
     assert_not flash.empty?
+
+    # ユーザー登録の終わったユーザーがログイン状態になっているかテスト
+    assert is_logged_in?
   end
 end

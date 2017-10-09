@@ -29,6 +29,7 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     assert flash.empty?
   end
 
+  # 有効な情報を使ったユーザーログイン成功のテスト
   test "login with valid information" do
     # 1.ログイン用のパスを開く
     get login_path

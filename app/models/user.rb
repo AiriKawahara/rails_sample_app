@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  # migrationでオブジェクトのもつ属性を定義することとほぼ同義
+  attr_accessor :remember_token
   # before_saveというコールバックを使い、オブジェクトが保存される際にemail属性を小文字に変換
   # Userモデルでは右辺のselfを省略することができる(左辺は省略することができない)
   # before_save { self.email = email.downcase }
@@ -32,5 +34,13 @@ class User < ApplicationRecord
   # ランダムなトークンを返す
   def User.new_token
     SecureRandom.urlsafe_base64
+  end
+
+  def remember
+    # 記憶トークンの生成
+    # selfを使用しないとremember_tokenというローカル変数が作成されてしまう
+    self.remember_token = User.new_token
+    # 記憶ダイジェストの更新
+    update_attribute(:remember_digest, User.digest(remember_token))
   end
 end

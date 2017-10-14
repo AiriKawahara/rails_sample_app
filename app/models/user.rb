@@ -36,11 +36,22 @@ class User < ApplicationRecord
     SecureRandom.urlsafe_base64
   end
 
+  # 永続セッションのためにユーザーをデータベースに記憶する
   def remember
     # 記憶トークンの生成
     # selfを使用しないとremember_tokenというローカル変数が作成されてしまう
     self.remember_token = User.new_token
     # 記憶ダイジェストの更新
     update_attribute(:remember_digest, User.digest(remember_token))
+  end
+
+  # 渡されたトークンが記憶ダイジェストと一致したらtrueを返す
+  def authenticated?(remember_token)
+    # 以下のような比較も可能
+    # BCrypt::Password.new(password_digest) == unencrypted_password
+    # または
+    # BCrypt::Password.new(remember_digest) == remember_token
+    # remember_digestはself.remember_digestと同義
+    BCrypt::Password.new(remember_digest).is_password?(remember_token)
   end
 end

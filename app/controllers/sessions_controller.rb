@@ -8,8 +8,9 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:session][:password])
       # SessionsHelperのloginメソッドを呼び出しセッションを登録する
       log_in(user)
+      # remember meのチェックボックスにチェックが入っている場合は
       # session_helper.rbのrememberメソッドを呼び出し記憶ダイジェストを登録する
-      remember(user)
+      params[:session][:remember_me] == '1' ? remember(user) : forget(user)
       # ユーザーログイン後にユーザー情報のページにリダイレクトする
       redirect_to user
     else

@@ -54,4 +54,8 @@ class User < ApplicationRecord
     # remember_digestはself.remember_digestと同義
     BCrypt::Password.new(remember_digest).is_password?(remember_token)
   end
+
+  def forget
+    update_attribute(:remember_digest, nil)
+  end
 end

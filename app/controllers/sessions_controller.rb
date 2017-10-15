@@ -3,16 +3,16 @@ class SessionsController < ApplicationController
   end
 
   def create
-    user = User.find_by(email: params[:session][:email].downcase)
+    @user = User.find_by(email: params[:session][:email].downcase)
     # authenticateメソッドは認証に失敗した時にfalseを返す
-    if user && user.authenticate(params[:session][:password])
+    if @user && @user.authenticate(params[:session][:password])
       # SessionsHelperのloginメソッドを呼び出しセッションを登録する
-      log_in(user)
+      log_in(@user)
       # remember meのチェックボックスにチェックが入っている場合は
       # session_helper.rbのrememberメソッドを呼び出し記憶ダイジェストを登録する
-      params[:session][:remember_me] == '1' ? remember(user) : forget(user)
+      params[:session][:remember_me] == '1' ? remember(@user) : forget(@user)
       # ユーザーログイン後にユーザー情報のページにリダイレクトする
-      redirect_to user
+      redirect_to @user
     else
       # flash.nowはレンダリングが終わっているページで特別にフラッシュメッセージを表示することができる
       # その後リクエストが発生した時に消滅する

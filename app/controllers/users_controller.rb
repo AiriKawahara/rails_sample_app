@@ -25,7 +25,12 @@ class UsersController < ApplicationController
   end
 
   def update
+    @user = User.find(params[:id])
+    if @user.update_attributes(user_params)
 
+    else
+      # 更新に失敗した場合は編集ページに遷移する
+      render 'edit'
   end
 
   private

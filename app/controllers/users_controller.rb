@@ -31,6 +31,7 @@ class UsersController < ApplicationController
     else
       # 更新に失敗した場合は編集ページに遷移する
       render 'edit'
+    end
   end
 
   private

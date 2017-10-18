@@ -20,9 +20,14 @@ class User < ApplicationRecord
     # メールアドレスの大文字小文字を無視した一意性の検証
     uniqueness: { case_sensitive: false }
   )
+  # has_secure_passwordではオブジェクト生成時に存在性を検証する
   has_secure_password
-  #has_secure_passwordの存在性のバリデーションは空文字を許容してしまうため以下のコードを追加
-  validates :password, presence: true, length: { minimum: 6 }
+  # has_secure_passwordの存在性のバリデーションは空文字を許容してしまうため以下のコードを追加
+  # 「allow_nil: true」はパスワードのバリデーションに対して空だった時の例外処理
+  # 「allow_nil: true」を追加することでパスワードが空のままでも更新できるようになる
+  # 「allow_nil: true」を追加すると存在性のバリデーションとhas_secure_passwordによるバリデーション
+  # それぞれが実行され2つの同じエラー文が表示されるというバグも解消できる
+  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
   # 渡された文字列のハッシュ値を返す
   def User.digest(string)

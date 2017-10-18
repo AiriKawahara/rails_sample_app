@@ -18,7 +18,7 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
       }
     end
 
-    # 登録失敗の場合はnewとレイアウトが一致している(newページを再描画している)ことをテストする
+    # users/newとレイアウトが一致していることをテストする
     assert_template('users/new')
 
     # エラーメッセージをテストする

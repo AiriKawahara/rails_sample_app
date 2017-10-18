@@ -18,14 +18,14 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
       }
     end
 
-    # 登録失敗の場合はnewアクションが再描画されていることをテストする
+    # 登録失敗の場合はnewとレイアウトが一致している(newページを再描画している)ことをテストする
     assert_template('users/new')
 
     # エラーメッセージをテストする
     assert_select('div#error_explanation')
     assert_select('div.alert')
 
-    # POSTが送信されているURLが正しいかをテストする
+    # POSTが送信されているURLが正しいことをテストする
     assert_select('form[action="/signup"]')
   end
 

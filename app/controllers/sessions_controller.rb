@@ -12,7 +12,9 @@ class SessionsController < ApplicationController
       # session_helper.rbのrememberメソッドを呼び出し記憶ダイジェストを登録する
       params[:session][:remember_me] == '1' ? remember(@user) : forget(@user)
       # ユーザーログイン後にユーザー情報のページにリダイレクトする
-      redirect_to @user
+      # redirect_to @user
+      # ログイン後の遷移先を制御する
+      redirect_back_or @user
     else
       # flash.nowはレンダリングが終わっているページで特別にフラッシュメッセージを表示することができる
       # その後リクエストが発生した時に消滅する

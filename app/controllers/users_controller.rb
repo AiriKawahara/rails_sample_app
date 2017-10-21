@@ -59,6 +59,7 @@ class UsersController < ApplicationController
       # session_helperのlogged_in?メソッド
       unless logged_in?
         # ログイン済みでない場合の処理
+        store_location
         flash[:danger] = "Please log in."
         redirect_to login_url
       end

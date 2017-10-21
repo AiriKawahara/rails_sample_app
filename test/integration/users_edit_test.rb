@@ -11,7 +11,7 @@ class UsersEditTest < ActionDispatch::IntegrationTest
     log_in_as(@user)
     get edit_user_path(@user)
 
-    # users/editとレイアウトが一致していることをテストする
+    # edit用のテンプレートが描画されることを確認する
     assert_template('users/edit')
 
     patch user_path(@user),
@@ -35,7 +35,7 @@ class UsersEditTest < ActionDispatch::IntegrationTest
     log_in_as(@user)
     get edit_user_path(@user)
 
-    # users/editとレイアウトが一致していることをテストする
+    # edit用のテンプレートが描画されることを確認する
     assert_template('users/edit')
 
     # パスワードを変更する必要がない場合はパスワードを入力しなくても
@@ -84,5 +84,33 @@ class UsersEditTest < ActionDispatch::IntegrationTest
     }
     assert_not flash.empty?
     assert_redirected_to login_url
+  end
+
+  # フレンドリーフォワーディングのテスト
+  # フレンドリーフォワーディングはログイン後にログインする直前のページに
+  # リダイレクトさせる機能のこと
+  test "successful edit with friendly forwarding" do
+    get edit_user_path(@user)
+    # session[:forwarding_url]が正しいかテスト
+    assert session[:forwarding_url]
+    log_in_as(@user)
+    # ログイン後の転送先のテスト
+    assert_redirected_to edit_user_url(@user) || default
+    name = "Foo Bar"
+    email = "foo@bar.com"
+    patch user_path(@user),
+    params: {
+      user: {
+        name:                  name,
+        email:                 email,
+        password:              "",
+        password_confirmation: ""
+      }
+    }
+    assert_not flash.empty?
+    assert_redirected_to @user
+    @user.reload
+    assert_equal name, @user.name
+    assert_equal email, @user.email
   end
 end

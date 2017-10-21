@@ -1,4 +1,12 @@
 class UsersController < ApplicationController
+  # beforeフィルターはbefore_actionメソッドを使って
+  # 何らかの処理が実行される直前に特定のメソッドを実行する仕組み
+  # boforeフィルタはコントローラ内のすべてのアクションに適用されるので
+  # :onlyオプション(ハッシュ)を渡し:editと:updateアクションだけに
+  # このフィルタが適用されるよう制限をかけている
+  # editアクションとupdateアクションを実行する直前にlogged_in_userアクションを実行させる
+  before_action :logged_in_user, only: [:edit, :update]
+
   def show
     @user = User.find(params[:id])
   end
@@ -41,5 +49,17 @@ class UsersController < ApplicationController
       params
       .require(:user)
       .permit(:name, :email, :password, :password_confirmation)
+    end
+
+    # beforeアクション
+
+    # ログイン済みユーザーかどうか確認
+    def logged_in_user
+      # session_helperのlogged_in?メソッド
+      unless logged_in?
+        # ログイン済みでない場合の処理
+        flash[:danger] = "Please log in."
+        redirect_to login_url
+      end
     end
 end

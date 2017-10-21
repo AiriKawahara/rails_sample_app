@@ -7,6 +7,8 @@ class UsersEditTest < ActionDispatch::IntegrationTest
 
   # 登録失敗時のテスト
   test "unsuccessful edit" do
+    # テストをする前にログインする
+    log_in_as(@user)
     get edit_user_path(@user)
 
     # users/editとレイアウトが一致していることをテストする
@@ -22,8 +24,6 @@ class UsersEditTest < ActionDispatch::IntegrationTest
       }
     }
 
-    
-
     # エラーメッセージが存在することをテストする
     assert_select('div#error_explanation')
     assert_select('div.alert', 'The form contains 4 errors.')
@@ -31,6 +31,8 @@ class UsersEditTest < ActionDispatch::IntegrationTest
 
   # 登録成功時のテスト
   test "successful edit" do
+    # テストをする前にログインする
+    log_in_as(@user)
     get edit_user_path(@user)
 
     # users/editとレイアウトが一致していることをテストする
@@ -62,5 +64,25 @@ class UsersEditTest < ActionDispatch::IntegrationTest
     # データベース内のユーザー情報が正しく変更されたことをテストする
     assert_equal name, @user.name
     assert_equal email, @user.email
+  end
+
+  # editアクションの保護に対するテスト
+  test "should redirect edit when not logged in" do
+    get edit_user_path(@user)
+    assert_not flash.empty?
+    assert_redirected_to login_url
+  end
+
+  # updateアクションの保護に対するテスト
+  test "should redirect update when not logged in" do
+    patch user_path(@user),
+    params: {
+      user: {
+        name: @user.name,
+        email: @user.email
+      }
+    }
+    assert_not flash.empty?
+    assert_redirected_to login_url
   end
 end

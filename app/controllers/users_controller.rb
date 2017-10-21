@@ -4,9 +4,13 @@ class UsersController < ApplicationController
   # boforeフィルタはコントローラ内のすべてのアクションに適用されるので
   # :onlyオプション(ハッシュ)を渡し:editと:updateアクションだけに
   # このフィルタが適用されるよう制限をかけている
-  # editアクションとupdateアクションを実行する直前にlogged_in_userアクションを実行させる
-  before_action :logged_in_user, only: [:edit, :update]
+  # indexアクションとeditアクションとupdateアクションを実行する直前にlogged_in_userアクションを実行させる
+  before_action :logged_in_user, only: [:index, :edit, :update]
   before_action :correct_user,   only: [:edit, :update]
+
+  def index
+    @users = User.all
+  end
 
   def show
     @user = User.find(params[:id])

@@ -11,6 +11,13 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  # indexアクションのリダイレクトをテストする
+  test "should redirect index when not logged in" do
+    # ログインしていない場合はログイン画面に強制的に遷移させる
+    get users_path
+    assert_redirected_to login_url
+  end
+
   # ログインユーザーとは別のユーザーの編集ページには遷移できないことをテストする
   test "should redirect edit when logged in as wrong user" do
     log_in_as(@other_user)

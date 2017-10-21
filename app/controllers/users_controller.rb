@@ -6,6 +6,7 @@ class UsersController < ApplicationController
   # このフィルタが適用されるよう制限をかけている
   # editアクションとupdateアクションを実行する直前にlogged_in_userアクションを実行させる
   before_action :logged_in_user, only: [:edit, :update]
+  before_action :correct_user,   only: [:edit, :update]
 
   def show
     @user = User.find(params[:id])
@@ -61,5 +62,13 @@ class UsersController < ApplicationController
         flash[:danger] = "Please log in."
         redirect_to login_url
       end
+    end
+
+    # 正しいユーザーかどうか確認
+    def correct_user
+      @user = User.find(params[:id])
+      # ログイン中のユーザーと違うユーザーの編集ページに遷移しようとした場合
+      # root_urlにリダイレクトする
+      redirect_to(root_url) unless current_user?(@user)
     end
 end

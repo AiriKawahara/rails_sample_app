@@ -16,6 +16,10 @@ module SessionsHelper
     cookies.permanent[:remember_token] = user.remember_token
   end
 
+  def current_user?(user)
+    user == current_user
+  end
+
   # 現在ログイン中のユーザーを返す(ログイン中の場合)
   # ビュー(ヘッダ)から呼び出されている
   def current_user

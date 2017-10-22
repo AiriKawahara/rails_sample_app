@@ -5,9 +5,9 @@ class UsersController < ApplicationController
   # :onlyオプション(ハッシュ)を渡し:editと:updateアクションだけに
   # このフィルタが適用されるよう制限をかけている
   # indexアクションとeditアクションとupdateアクションを実行する直前にlogged_in_userアクションを実行させる
-  before_action :logged_in_user, only: [:index, :edit, :update]
+  before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
   before_action :correct_user,   only: [:edit, :update]
-  before_action :admin_user,     only: [:delete]
+  before_action :admin_user,     only: [:destroy]
 
   def index
     @users = User.paginate(page: params[:page])

@@ -1,11 +1,18 @@
 class User < ApplicationRecord
   # migrationでオブジェクトのもつ属性を定義することとほぼ同義
-  attr_accessor :remember_token
+  attr_accessor :remember_token, :activation_token
   # before_saveというコールバックを使い、オブジェクトが保存される際にemail属性を小文字に変換
   # Userモデルでは右辺のselfを省略することができる(左辺は省略することができない)
   # before_save { self.email = email.downcase }
   # 末尾に「!」を付け加えることによりemail属性を直接変更できるようになる
-  before_save { email.downcase! }
+  # before_save { email.downcase! }
+  # メソッド参照に変更
+  before_save :downcase_email
+
+  # メソッド参照
+  # ユーザーを作成する前に有効化トークンと有効化ダイジェストを作成する
+  before_create :create_activation_digest
+
   validates(
     :name,
     presence: true,
@@ -65,4 +72,17 @@ class User < ApplicationRecord
   def forget
     update_attribute(:remember_digest, nil)
   end
+
+  private
+
+    # メールアドレスをすべて小文字にする
+    def downcase_email
+      self.email = email.downcase
+    end
+    
+    # 有効化トークンと有効化ダイジェストを作成および代入する
+    def create_activation_digest
+      self.activation_token = User.new_token
+      self.activation_digest = User.digest(activation_token)
+    end
 end

@@ -47,12 +47,14 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     end
     # POSTリクエストを送信した結果を見て指定したリダイレクト先に移動するメソッド
     follow_redirect!
-    assert_template('users/show')
+    # Railsチュートリアル11.2.4で仕様変更のためコメントアウト
+    # assert_template('users/show')
 
     # flashのテスト
     assert_not flash.empty?
 
     # ユーザー登録の終わったユーザーがログイン状態になっているかテスト
-    assert is_logged_in?
+    # Railsチュートリアル11.2.4で仕様変更のためコメントアウト
+    # assert is_logged_in?
   end
 end

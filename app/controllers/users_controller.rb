@@ -24,10 +24,15 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      log_in @user
-      flash[:success] = "Welcome to the Sample App!"
-      # redirect_to user_url(@user)と等価
-      redirect_to @user
+      # log_in @user
+      # flash[:success] = "Welcome to the Sample App!"
+      # # redirect_to user_url(@user)と等価
+      # redirect_to @user
+      
+      # メイラーの使用
+      UserMailer.account_activation(@user).deliver_now
+      flash[:info] = "Please check your email to activate your account."
+      redirect_to root_url
     else
       # 保存に失敗した場合は登録ページに遷移する
       render 'new'

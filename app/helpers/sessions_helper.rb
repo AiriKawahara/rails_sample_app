@@ -33,7 +33,7 @@ module SessionsHelper
       # cookiesの暗号が解除され元に戻る
       user = User.find_by(id: user_id)
       # model(user.rb)のauthenticated?メソッドの呼び出し
-      if user && user.authenticated?(cookies[:remember_token])
+      if user && user.authenticated?(:remember, cookies[:remember_token])
         log_in(user)
         @current_user = user
       end

@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   # migrationでオブジェクトのもつ属性を定義することとほぼ同義
+  # ただしハッシュ化していないトークンはセキュリティのためDBには格納しない
   attr_accessor :remember_token, :activation_token
   # before_saveというコールバックを使い、オブジェクトが保存される際にemail属性を小文字に変換
   # Userモデルでは右辺のselfを省略することができる(左辺は省略することができない)
@@ -58,15 +59,23 @@ class User < ApplicationRecord
   end
 
   # 渡されたトークンが記憶ダイジェストと一致したらtrueを返す
-  def authenticated?(remember_token)
+  # アカウント有効化のダイジェストと渡されたトークンが一致するかチェック
+  def authenticated?(attribute, token)
+    # メタプログラミング：プログラムでプログラムを作成する
+    # sendメソッド：渡されたオブジェクトにメッセージを送ることによって
+    # 呼び出すメソッドを動的に決めることができる
+    # attributeとして:attributeが渡された場合は
+    # userオブジェクトにactivation_digestメソッドを渡している
+    # selfは省略可能
+    digest = self.send("#{attribute}_digest")
     # 記憶ダイジェストがnilの場合はfalseを返す
-    return false if remember_digest.nil?
+    return false if digest.nil?
     # 以下のような比較も可能
     # BCrypt::Password.new(password_digest) == unencrypted_password
     # または
     # BCrypt::Password.new(remember_digest) == remember_token
     # remember_digestはself.remember_digestと同義
-    BCrypt::Password.new(remember_digest).is_password?(remember_token)
+    BCrypt::Password.new(digest).is_password?(token)
   end
 
   def forget

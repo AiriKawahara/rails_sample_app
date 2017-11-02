@@ -20,7 +20,7 @@ Rails.application.configure do
   # Railsチュートリアル11.2.2で追加
   config.action_mailer.delivery_method = :test
   # 自分の環境に合わせて変更
-  host = 'localhost:3000'
+  host = '192.168.33.10:3000'
   config.action_mailer.default_url_options = { host: host, protocol: 'https' }
 
   config.action_mailer.perform_caching = false

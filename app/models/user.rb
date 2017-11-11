@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   # migrationでオブジェクトのもつ属性を定義することとほぼ同義
   # ただしハッシュ化していないトークンはセキュリティのためDBには格納しない
-  attr_accessor :remember_token, :activation_token
+  attr_accessor :remember_token, :activation_token, :reset_token
   # before_saveというコールバックを使い、オブジェクトが保存される際にemail属性を小文字に変換
   # Userモデルでは右辺のselfを省略することができる(左辺は省略することができない)
   # before_save { self.email = email.downcase }
@@ -96,6 +96,18 @@ class User < ApplicationRecord
   # 有効化用のメールを送信する
   def send_activation_email
     UserMailer.account_activation(self).deliver_now
+  end
+
+  # パスワード再設定の属性を設定する
+  def create_reset_digest
+    self.reset_token = User.new_token
+    update_attribute(:reset_digest,  User.digest(reset_token))
+    update_attribute(:reset_sent_at, Time.zone.now)
+  end
+
+  # パスワード再設定のメールを送信する
+  def send_password_reset_email
+    UserMailer.password_reset(self).deliver_now
   end
 
   private

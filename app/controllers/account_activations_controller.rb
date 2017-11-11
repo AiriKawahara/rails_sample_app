@@ -5,8 +5,8 @@ class AccountActivationsController < ApplicationController
     # 有効化リンクを後から盗みだした人がログインしないよう
     # !user.activate?の条件式が必要となる
     if user && !user.activated? && user.authenticated?(:activation, params[:id])
-      user.update_attribute(:activated,    true)
-      user.update_attribute(:activated_at, Time.zone.now)
+      # modelのメソッドの呼び出し
+      user.activate
       log_in user
       flash[:success] = "Account activated!"
       redirect_to user

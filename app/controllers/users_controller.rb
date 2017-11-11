@@ -10,11 +10,14 @@ class UsersController < ApplicationController
   before_action :admin_user,     only: [:destroy]
 
   def index
-    @users = User.paginate(page: params[:page])
+    # @users = User.paginate(page: params[:page])
+    # 有効化していないユーザーを非表示にする
+    @users = User.where(activated: true).paginate(page: params[:page])
   end
 
   def show
     @user = User.find(params[:id])
+    redirect_to root_url and return unless @user.activated?
   end
 
   def new
@@ -29,8 +32,8 @@ class UsersController < ApplicationController
       # # redirect_to user_url(@user)と等価
       # redirect_to @user
       
-      # メイラーの使用
-      UserMailer.account_activation(@user).deliver_now
+      # メイラーの使用(メソッドはmodelに定義)
+      @user.send_activation_email
       flash[:info] = "Please check your email to activate your account."
       redirect_to root_url
     else

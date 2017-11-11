@@ -1,6 +1,10 @@
 require 'test_helper'
 
 class UsersSignupTest < ActionDispatch::IntegrationTest
+  def setup
+    ActionMailer::Base.deliveries.clear
+  end
+
   test "invalid signup information" do
     get signup_path
 
@@ -56,5 +60,47 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     # ユーザー登録の終わったユーザーがログイン状態になっているかテスト
     # Railsチュートリアル11.2.4で仕様変更のためコメントアウト
     # assert is_logged_in?
+  end
+
+  # ユーザー登録のテストにアカウント有効化を追加する
+  # 本当は"valid signup information"とまとめる
+  test "valid signup information with account activation" do
+    get signup_path
+    assert_difference 'User.count', 1 do
+      # post signup_pathとpost users_pathは同じっぽい
+      post users_path,
+      params: {
+        user: {
+          name:                  "Example User",
+          email:                 "user@example.com",
+          password:              "password",
+          password_confirmation: "password"
+        }
+      }
+      # 下の1行がこのテストで最も大事
+      # 配信されたメッセージがきっかり1つかどうか確認
+      # deliveriesは変数なのでsetupメソッドでこれを初期化しておかないと
+      # 並行して行われる他のテストでメールが配信されたときにエラーが発生する
+      assert_equal 1, ActionMailer::Base.deliveries.size
+      # assignsメソッドを使うと対応するアクション内のインスタンス変数にアクセスできる
+      # createアクションで定義された@userというインスタンス変数にアクセス
+      user = assigns(:user)
+      assert_not user.activated?
+      # 有効化していない状態でログインしてみる
+      log_in_as(user)
+      assert_not is_logged_in?
+      # 有効化トークンが不正な場合
+      get edit_account_activation_path("invalid token", email: user.email)
+      assert_not is_logged_in?
+      # トークンは正しいがメールアドレスが無効な場合
+      get edit_account_activation_path(user.activation_token, email: "wrong")
+      assert_not is_logged_in?
+      # 有効化トークンが正しい場合
+      get edit_account_activation_path(user.activation_token, email: user.email)
+      assert user.reload.activated?
+      follow_redirect!
+      assert_template 'users/show'
+      assert is_logged_in?
+    end
   end
 end

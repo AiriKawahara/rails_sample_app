@@ -11,7 +11,7 @@ class PasswordResetsController < ApplicationController
       @user.send_password_reset_email
       # ルートURLにリダイレクトしフラッシュメッセージをユーザーに表示
       flash[:info] = "Email sent with password reset instructions"
-      redirect_to 
+      redirect_to root_url
     else
       # 送信が無効な場合はログインと同様にnewページを出力してflash.nowメッセージを表示
       # flash.nowはレンダリングが終わっているページに特別にメッセージを表示

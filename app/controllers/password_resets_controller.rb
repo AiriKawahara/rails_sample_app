@@ -43,6 +43,9 @@ class PasswordResetsController < ApplicationController
       # user_paramsはプライベートメソッド
       # (4)への対応
       log_in @user
+      # パスワード再設定に成功したらダイジェストをnilにし
+      # 同じURLからパスワード再設定を行うことができないようにする
+      @user.update_attribute(:reset_digest, nil)
       flash[:success] = "Password has been reset."
       redirect_to @user
     else

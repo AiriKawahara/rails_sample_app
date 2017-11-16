@@ -5,8 +5,10 @@ class MicropostTest < ActiveSupport::TestCase
   # 1. fixtureのサンプルユーザーと紐づけた新しいマイクロポストを作成
   def setup
     @user = users(:michael)
-    # このコードは慣習的に正しくない
-    @micropost = Micropost.new(content: "Lorem ipsum", user_id: @user.id)
+    # 下コードは慣習的に正しくない
+    # @micropost = Micropost.new(content: "Lorem ipsum", user_id: @user.id)
+    # 下のコードは慣習的に正しい
+    @micropost = @user.microposts.build(content: "Lorem ipsum")
   end
   
   # 2. 作成したマイクロポストが有効かどうかをチェックするテスト

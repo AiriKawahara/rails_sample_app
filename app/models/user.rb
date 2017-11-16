@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_many :microposts
   # migrationでオブジェクトのもつ属性を定義することとほぼ同義
   # ただしハッシュ化していないトークンはセキュリティのためDBには格納しない
   attr_accessor :remember_token, :activation_token, :reset_token

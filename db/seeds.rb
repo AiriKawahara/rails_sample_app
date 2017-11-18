@@ -21,3 +21,12 @@ User.create!(
     activated_at: Time.zone.now
   )
 end
+
+# orderメソッドを経由することで明示的に最初の6人を呼び出す
+users = User.order(:created_at).take(6)
+# 最初の6人に50個分のマイクロポストを追加する
+50.times do
+  # Lorem.sentenceはFaker gemのメソッド
+  content = Faker::Lorem.sentence(5)
+  users.each { |user| user.microposts.create!(content: content) }
+end

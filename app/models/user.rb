@@ -1,5 +1,6 @@
 class User < ApplicationRecord
-  has_many :microposts
+  # ユーザーが削除されたときはそのユーザーに紐づいたマイクロポストも削除する
+  has_many :microposts, dependent: :destroy
   # migrationでオブジェクトのもつ属性を定義することとほぼ同義
   # ただしハッシュ化していないトークンはセキュリティのためDBには格納しない
   attr_accessor :remember_token, :activation_token, :reset_token

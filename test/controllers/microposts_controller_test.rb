@@ -22,4 +22,15 @@ class MicropostsControllerTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to login_url
   end
+
+  # 自分以外のユーザーのマイクロポストを削除しようとすると
+  # 適切にリダイレクトされることをテストで確認
+  test "should redirect destroy for wrong  micropost" do
+    log_in_as(users(:michael))
+    micropost = microposts(:ants)
+    assert_no_difference 'Micropost.count' do
+      delete micropost_path(micropost)
+    end
+    assert_redirected_to root_url
+  end
 end

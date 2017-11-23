@@ -12,6 +12,8 @@ class MicropostsInterfaceTest < ActionDispatch::IntegrationTest
     get root_path
     # 2. マイクロポストのページ分割の確認
     assert_select 'div.pagination'
+    # 画像アップローダー
+    assert_select 'input[type="file"]'
     # 3. 無効なマイクロポストを投稿
     assert_no_difference 'Micropost.count' do
       post microposts_path,
@@ -20,10 +22,17 @@ class MicropostsInterfaceTest < ActionDispatch::IntegrationTest
     assert_select 'div#error_explanation'
     # 4. 有効なマイクロポストを投稿
     content = "This micropost really ties the room together"
+    # fixture_file_uploadというメソッドは
+    # fixtureで定義されたファイルをアップロードするメソッド
+    picture = fixture_file_upload('test/fixtures/hyde.jpg', 'image/jpg')
     assert_difference 'Micropost.count', 1 do
       post microposts_path,
-           params: { micropost: { content: content }}
+           params: { micropost: { content: content, picture: picture }}
     end
+    # 投稿に成功した後にcreateアクション内のマイクロポストにアクセスし
+    # picture属性が有効かどうかを確かめる
+    # assignsメソッドは対応するアクション内のインスタンス変数にアクセスする
+    assert assigns(:micropost).picture?
     assert_redirected_to root_url
     follow_redirect!
     assert_match content, response.body

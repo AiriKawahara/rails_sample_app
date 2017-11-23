@@ -30,7 +30,7 @@ class MicropostsController < ApplicationController
     def micropost_params
       # Strong Parameters(DBへ追加したり更新するパラメータを制限する仕組み)
       # を使ってマイクロポストのcontent属性だけがWeb経由で変更可能にしている
-      params.require(:micropost).permit(:content)
+      params.require(:micropost).permit(:content, :picture)
     end
 
     def correct_user

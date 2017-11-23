@@ -1,0 +1,9 @@
+<% if @feed_items.any? %>
+  <ol class="microposts">
+    <!-- @feed_itemsの各要素がMicropostクラスを持っていたため -->
+    <!-- Railsは対応する名前のパーシャルを渡されたリソースのディレクトリ内から探しに行くことができる -->
+    <!-- app/views/microposts/_micropost.html.erb -->
+    <%= render @feed_items %>
+  </ol>
+  <%= will_paginate @feed_items %>
+<% end %>

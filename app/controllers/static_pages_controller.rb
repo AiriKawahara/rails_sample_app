@@ -1,6 +1,12 @@
 class StaticPagesController < ApplicationController
   def home
-    @micropost = current_user.microposts.build if logged_in?
+    # ビューに渡すための変数
+    if logged_in?
+      @micropost = current_user.microposts.build
+      # フィードを使うために、現在のユーザーのページ分割されたフィードに
+      # @feed_itemsインスタンス変数を追加する
+      @feed_items = current_user.feed.paginate(page: params[:page])
+    end
   end
 
   def help

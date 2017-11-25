@@ -5,7 +5,19 @@
   </div>
   <%= f.submit "Post", class: "btn btn-primary" %>
   <span class="picture">
-    <!-- Homeページにアップローダーを追加するためにfile_fieldタグを追加 -->
-    <%= f.file_field :picture %>
+    <!-- file_fieldタグでHomeページにアップローダーを追加 -->
+    <!-- フォーマットのバリデーションを反映するためにfile_fieldタグにacceptパラメータを付与して使う -->
+    <!-- acceptパラメータではサーバ側で許可したファイル形式をMIMEタイプで指定する -->
+    <%= f.file_field :picture, accept: 'image/jpeg, image/gif, image/png' %>
   </span>
 <% end %>
+
+<script type="text/javascript">
+  // #micropost_pictureはファイルアップローダーを指す
+  $('#micropost_picture').bind('change', function() {
+    var size_in_megabytes = this.files[0].size/1024/1024;
+    if (size_in_megabytes > 5) {
+      alert('Maximum file size is 5MB. Please choose a smaller file.');
+    }
+  });
+</script>

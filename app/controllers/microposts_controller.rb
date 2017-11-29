@@ -21,7 +21,7 @@ class MicropostsController < ApplicationController
     # request.referrerメソッドは1つ前のURLを返す
     # DELETEリクエストが発行されたページに戻すことができる
     redirect_to request.referrer || root_url
-    # 下のコードでもうまくいく
+    # 下のコードでもうまくいく(はず)
     # redirect_back(fallback_location: root_url)
   end
 

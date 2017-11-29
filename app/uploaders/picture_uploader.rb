@@ -2,7 +2,8 @@ class PictureUploader < CarrierWave::Uploader::Base
 
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
-  # include CarrierWave::MiniMagick
+  include CarrierWave::MiniMagick
+  # process resize_to_limit: [400, 400]
 
   # Choose what kind of storage to use for this uploader:
   storage :file
@@ -29,10 +30,11 @@ class PictureUploader < CarrierWave::Uploader::Base
   #   # do something
   # end
 
-  # Create different versions of your uploaded files:
-  # version :thumb do
-  #   process resize_to_fit: [50, 50]
-  # end
+  # Railsチュートリアル13.67の実装では
+  # リサイズした際に画像が破損するためファイル名を変更して保存
+  version :resize do
+    process resize_to_limit: [400, 400]
+  end
 
   # アップロード可能な拡張子リスト
   def extension_whitelist

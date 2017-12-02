@@ -1,0 +1,18 @@
+<!-- このパーシャルはプロフィールページとHomeページの両方に表示されるので次のコードで現在のユーザーを取得する -->
+<!-- @userがnilでない場合(プロフィールページの場合)は何もせず -->
+<!-- nilの場合(Homeページの場合)@userにcurrent_userを代入 -->
+<% @user ||= current_user %>
+<div class="stats">
+  <a href="<%= following_user_path(@user) %>">
+    <strong id="following" class="stat">
+      <%= @user.following.count %>
+    </strong>
+    following
+  </a>
+  <a href="<%= followers_user_path(@user) %>">
+    <strong id="followers" class="stat">
+      <%= @user.followers.count %>
+    </strong>
+    followers
+  </a>
+</div>

@@ -4,12 +4,18 @@ class User < ApplicationRecord
   has_many :active_relationships, class_name:  "Relationship",
                                   foreign_key: "follower_id",
                                   dependent:   :destroy
+  has_many :passive_relationships, class_name:  "Relationship",
+                                   foreign_key: "followed_id",
+                                   dependent:   :destroy
   # throughという関連付けでモデル名に対する外部キーを探す
   # relationshipsテーブルの外部キー(followed_id)を使って
   # 対象のユーザーを取得する
   # :sourceパラメータを使ってfollowing配列のもとは
   # followed_idの集合であるということを明示的にRailsに伝える
-  has_many :following, through: :active_relationships, source: :followed
+  has_many :following, through: :active_relationships,  source: :followed
+  # 上のコードではfollowedsという英語が正しくないためfollowingとして
+  # sourceでの何の集合かを明示的に示していたが、下のコードではsourceは省略可能
+  has_many :followers, through: :passive_relationships, source: :follower
   # migrationでオブジェクトのもつ属性を定義することとほぼ同義
   # ただしハッシュ化していないトークンはセキュリティのためDBには格納しない
   attr_accessor :remember_token, :activation_token, :reset_token

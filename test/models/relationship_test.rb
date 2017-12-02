@@ -31,6 +31,7 @@ class RelationshipTest < ActiveSupport::TestCase
     michael.follow(archer)
     # 3. フォロー中になったことを確認
     assert michael.following?(archer)
+    assert archer.followers.include?(michael)
     # 4. ユーザーをフォロー解除
     michael.unfollow(archer)
     # 5. フォロー解除したことを確認

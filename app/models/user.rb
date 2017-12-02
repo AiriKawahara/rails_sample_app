@@ -1,6 +1,9 @@
 class User < ApplicationRecord
   # ユーザーが削除されたときはそのユーザーに紐づいたマイクロポストも削除する
   has_many :microposts, dependent: :destroy
+  has_many :active_relationships, class_name:  "Relationship",
+                                  foreign_key: "follower_id",
+                                  dependent:   :destroy
   # migrationでオブジェクトのもつ属性を定義することとほぼ同義
   # ただしハッシュ化していないトークンはセキュリティのためDBには格納しない
   attr_accessor :remember_token, :activation_token, :reset_token

@@ -21,4 +21,19 @@ class RelationshipTest < ActiveSupport::TestCase
     @relationship.followed_id = nil
     assert_not @relationship.valid?
   end
+
+  test "should follow and unfollow a user" do
+    michael = users(:michael)
+    archer = users(:archer)
+    # 1. ユーザーをまだフォローしていないことを確認
+    assert_not michael.following?(archer)
+    # 2. ユーザーをフォロー
+    michael.follow(archer)
+    # 3. フォロー中になったことを確認
+    assert michael.following?(archer)
+    # 4. ユーザーをフォロー解除
+    michael.unfollow(archer)
+    # 5. フォロー解除したことを確認
+    assert_not michael.following?(archer)
+  end
 end

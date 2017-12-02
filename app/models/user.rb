@@ -4,6 +4,12 @@ class User < ApplicationRecord
   has_many :active_relationships, class_name:  "Relationship",
                                   foreign_key: "follower_id",
                                   dependent:   :destroy
+  # throughという関連付けでモデル名に対する外部キーを探す
+  # relationshipsテーブルの外部キー(followed_id)を使って
+  # 対象のユーザーを取得する
+  # :sourceパラメータを使ってfollowing配列のもとは
+  # followed_idの集合であるということを明示的にRailsに伝える
+  has_many :following, through: :active_relationships, source: :followed
   # migrationでオブジェクトのもつ属性を定義することとほぼ同義
   # ただしハッシュ化していないトークンはセキュリティのためDBには格納しない
   attr_accessor :remember_token, :activation_token, :reset_token
@@ -132,6 +138,24 @@ class User < ApplicationRecord
     # SQLインジェクションを避けることができる
     # 変数を代入する場合は常にエスケープする習慣を身につけること
     Micropost.where("user_id = ?", id)
+  end
+
+  # ユーザーをフォローする
+  def follow(other_user)
+    # selfは省略
+    active_relationships.create(followed_id: other_user.id)
+  end
+
+  # ユーザーをフォロー解除する
+  def unfollow(other_user)
+    # selfは省略
+    active_relationships.find_by(followed_id: other_user.id).destroy
+  end
+
+  # 現在のユーザーが引数で指定したユーザーをフォローしていたらtrueを返す
+  def following?(other_user)
+    # selfは省略
+    following.include?(other_user)
   end
 
   private

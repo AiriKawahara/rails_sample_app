@@ -1,3 +1,4 @@
+# ユーザー
 User.create!(
   name:  "Example User",
   email: "example@railstutorial.org",
@@ -22,6 +23,7 @@ User.create!(
   )
 end
 
+# マイクロポスト
 # orderメソッドを経由することで明示的に最初の6人を呼び出す
 users = User.order(:created_at).take(6)
 # 最初の6人に50個分のマイクロポストを追加する
@@ -30,3 +32,11 @@ users = User.order(:created_at).take(6)
   content = Faker::Lorem.sentence(5)
   users.each { |user| user.microposts.create!(content: content) }
 end
+
+# リレーションシップ
+users = User.all
+user = users.first
+following = users[2..50]
+followers = users[3..40]
+following.each { |followed| user.follow(followed) }
+followers.each { |follower| follower.follow(user) }

@@ -104,6 +104,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "feed should have the right posts" do
+    # michaelはlanaをフォローしているがarcherはフォローしていない(fixturesで定義済み)
     michael = users(:michael)
     archer  = users(:archer)
     lana    = users(:lana)

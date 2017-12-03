@@ -139,11 +139,20 @@ class User < ApplicationRecord
   # 試作feedの定義
   # 完全な実装は次章の「ユーザーをフォローする」を参照
   # 現在はログインユーザー(自分)のマイクロポストをすべて取得する
-  def feed
+  # def feed
     # 疑問符があることでSQLクエリに代入する前にidがエスケープされるため
     # SQLインジェクションを避けることができる
     # 変数を代入する場合は常にエスケープする習慣を身につけること
-    Micropost.where("user_id = ?", id)
+    # Micropost.where("user_id = ?", id)
+  # end
+
+  # ユーザーのステータスフィードを返す
+  def feed
+    Micropost.where(
+      "user_id IN (?) OR user_id = ?",
+      following_ids,
+      id
+    )
   end
 
   # ユーザーをフォローする

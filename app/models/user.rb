@@ -148,11 +148,29 @@ class User < ApplicationRecord
 
   # ユーザーのステータスフィードを返す
   def feed
-    Micropost.where(
-      "user_id IN (?) OR user_id = ?",
-      following_ids,
-      id
-    )
+    # 以下のコードではfollowing_idsでフォローしているすべてのユーザーを
+    # データベースに問い合わせた後フォローしているユーザーの完全な配列を作るため
+    # 再度データベースに問い合わせをしているため時間がかかる
+    # Micropost.where(
+    #   "user_id IN (?) OR user_id = ?",
+    #   following_ids,
+    #   id
+    # )
+    # 同じ変数を複数の場所に挿入したい場合下のコードの方が便利
+    # Micropost.where(
+    #   "user_id IN (:following_ids) OR user_id = :user_id",
+    #   following_ids: following_ids,
+    #   user_id: id
+    # )
+    # サブセレクト
+    # このサブセレクトは集合のロジックをRailsではなくデータベース内に保存するため
+    # より効率的にデータを取得することができる
+    following_ids = "SELECT followed_id FROM relationships
+                     WHERE follower_id = :user_id"
+    # following_idsという文字列はエスケープされているのではなく
+    # 見やすさのために式展開しているだけ
+    Micropost.where("user_id IN (#{following_ids})
+                     OR user_id = :user_id", user_id: id)
   end
 
   # ユーザーをフォローする
